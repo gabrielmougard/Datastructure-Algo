@@ -219,6 +219,54 @@ bool search_recur(struct Node* head, int x)
     return search(head->next, x);
 }
 
+//function that returns the value of a given node
+int GetNth(struct Node* head_ref, int index) {
+
+  int i;
+  struct Node* current = head_ref;
+  for(i = 0; current != NULL && i <= index;i++) {
+    current = current->next;
+  }
+  return current->data;
+}
+
+//function that returns the value of a node from end of the linked List
+int GetNthFromEnd(struct Node* head, int index) {
+  int len  = length_recur(head);
+  return GetNth(head,len-index+1);
+}
+
+//count occurence in a given linked list
+int Count(struct Node* head, int occurence) {
+  int i = 0;
+  struct Node* current = head;
+  while (current != NULL) {
+    if (current->data == occurence) {
+      i++;
+    }
+    current = current->next;
+  }
+  return i;
+}
+
+//detect is linked list has a loop
+//Floyd's Cycle-Finding Algorithm : Traverse linked list using two pointers
+//Move one pointer by one and the other pointer by two.If these pointers
+//meet at some node then there is a loop. If pointers do not meet then linked List
+//doesn't have loop
+int detectLoop(struct Node *list) {
+  struct Node *slow_p = list, *fast_p = list;
+  while (slow_p && fast_p && fast_p->next) {
+    slow_p = slow_p->next;
+    fast_p = fast_p->next->next;
+    if (slow_p == fast_p) {
+      printf("Found loop");
+      return 1;
+    }
+  }
+  return 0;
+}
+
 //program to create a simple linked list with 3 nodes
 int main(void) {
 
