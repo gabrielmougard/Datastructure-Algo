@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 //linked list : unlike arrays Linked List are not stored at contiguous location
 // the elements are linked using pointers
@@ -191,6 +192,31 @@ int length_recur(struct Node* head) {
     return 0;
   }
   return 1+length_recur(head->next);
+}
+
+//seach for elements in linkedlist
+bool search(Node *head, int x) {
+  struct Node* current = head;
+  while (current != NULL) {
+    if(current->data == x) return true;
+
+    current = current->next;
+  return false;
+  }
+}
+
+bool search_recur(struct Node* head, int x)
+{
+    // Base case
+    if (head == NULL)
+        return false;
+
+    // If key is present in current node, return true
+    if (head->key == x)
+        return true;
+
+    // Recur for remaining list
+    return search(head->next, x);
 }
 
 //program to create a simple linked list with 3 nodes
