@@ -89,6 +89,37 @@ void append(struct Node** head_ref, int new_data) {
 
 }
 
+//deleting a node
+//1) Find previous node of the node to be deleted
+//2) Changed next of previous node
+//3) Free memory for the node to be deleted
+void delete(struct Node** head_ref, int key) {
+  //1
+  //store head node
+  struct Node* temp = *head_ref, *prev;
+  //if head node itself holds the key to be deleted
+  if (temp != NULL && temp->data == key) {
+    *head_ref = temp->next; //changed head
+    free(temp);
+    return;
+  }
+
+  //search for the key to be deleted, keep track of
+  //the previopus node as we need to change 'prev->next'
+  while (temp != NULL && temp->data !=key) {
+    prev = temp;
+    temp = temp->next;
+  }
+
+  //if key was not present in linked list
+  if (temp == NULL) return;
+
+  //else
+  prev->next = temp->next;
+  free(temp); //free memory
+
+}
+
 //N.B : timecomplexity of append is O(n) where n is the number of nodes
 
 
