@@ -154,8 +154,44 @@ void deleteNode(struct Node** head_ref, int position) {
   temp->next = next;
 }
 
-//N.B : timecomplexity of append is O(n) where n is the number of nodes
+//function to delete linked list
+void deleteLinkedList(struct Node** head_ref) {
 
+  //deref head_ref to get the real head
+  struct Node* current = *head_ref;
+  struct Node* next;
+
+  while (current != NULL ) {
+    next = current->next;
+    free(current);
+    current = next;
+  }
+
+  //deref head_ref to affect the real head back in the caller
+  *head_ref = NULL;
+}
+
+//find length of a Linked list
+//ex : length(1->3->1->2->1) return 5
+int length(struct Node* head) {
+  int i = 0; //for counting
+  struct Node* current = head;
+
+  while (current != NULL) {
+    i++
+    current = current->next;
+  }
+  return i;
+}
+
+//find length of linked list with recursive process
+int length_recur(struct Node* head) {
+
+  if( head == NULL) {
+    return 0;
+  }
+  return 1+length_recur(head->next);
+}
 
 //program to create a simple linked list with 3 nodes
 int main(void) {
