@@ -120,6 +120,40 @@ void delete(struct Node** head_ref, int key) {
 
 }
 
+//delete a linked list node at a given position
+// ex : position = 1, Linked list = 8->2->3->1->7
+//          output = 8->3->1->7
+void deleteNode(struct Node** head_ref, int position) {
+
+  //if linked list is empty
+  if(*head_ref->next == NULL) {
+    return;
+  }
+  //Store head node
+  struct Node* temp = *head_ref;
+
+  //if head needs to be removed
+  if (position == 0) {
+    *head_ref = temp->next; //change head
+    free(temp); //free old head
+    return;
+  }
+
+  //find previous node of the node to be deleted
+  for (int i = 0; temp !=NULL && i < position-1; i++) {
+    *head_ref = temp->next;
+  }
+
+  //if position is more than numbers of nodes
+  if (temp == NULL || temp->next == NULL) return;
+
+  //Node temp->next is the node to be deleteNode
+  //Store pointer to the next node  to be deleted
+  struct Node* next = temp->next->next;
+  free(temp->next);
+  temp->next = next;
+}
+
 //N.B : timecomplexity of append is O(n) where n is the number of nodes
 
 
