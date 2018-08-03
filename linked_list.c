@@ -127,7 +127,7 @@ void delete(struct Node** head_ref, int key) {
 void deleteNode(struct Node** head_ref, int position) {
 
   //if linked list is empty
-  if(*head_ref->next == NULL) {
+  if(*head_ref == NULL) {
     return;
   }
   //Store head node
@@ -179,7 +179,7 @@ int length(struct Node* head) {
   struct Node* current = head;
 
   while (current != NULL) {
-    i++
+    i++;
     current = current->next;
   }
   return i;
@@ -195,7 +195,7 @@ int length_recur(struct Node* head) {
 }
 
 //seach for elements in linkedlist
-bool search(Node *head, int x) {
+bool search(struct Node *head, int x) {
   struct Node* current = head;
   while (current != NULL) {
     if(current->data == x) return true;
@@ -212,7 +212,7 @@ bool search_recur(struct Node* head, int x)
         return false;
 
     // If key is present in current node, return true
-    if (head->key == x)
+    if (head->data == x)
         return true;
 
     // Recur for remaining list
@@ -267,26 +267,225 @@ int detectLoop(struct Node *list) {
   return 0;
 }
 
-//program to create a simple linked list with 3 nodes
+//check if linked list is a palindrome
+//we'll use list reversing Algorithm : time complexity O(n), O(1) extra space
+//1) get the middle of the LinkedList
+//2) Reverse the second half of the linkedlist
+//3) Check if the first half and second half are identical
+//4) Construct the original linked list by reversing
+//   the second half again and attaching it back to the first half
+void reverse(struct Node**); //prototype
+bool compareLists(struct Node*, struct Node*); //prototype
+
+void reverse(struct Node** head_ref) {
+  struct Node* prev = NULL;
+  struct Node* current = *head_ref;
+  struct Node* next;
+
+  while (current != NULL) {
+    next = current->next;
+    current->next = prev;
+    prev = current;
+    current = next;
+  }
+  *head_ref = prev;
+}
+
+bool compareLists(struct Node* head1, struct Node* head2) {
+  struct Node* temp1 = head1;
+  struct Node* temp2 = head2;
+
+  while(temp1 && temp2)
+  {
+    if (temp1->data == temp2->data) {
+      temp1 = temp1->next;
+      temp2 = temp2->next;
+    }
+    else return 0;
+  }
+
+  //if both are empty return 1
+  if (temp1 == NULL && temp2 == NULL) return 1;
+  //else if one is null
+  return 0;
+}
+bool checkIfPalindrome(struct Node *head) {
+
+  struct Node *slow_ptr = head, *fast_ptr = head;
+  struct Node *second_half, *prev_of_slow_ptr = head;
+  struct Node *midnode = NULL; //to handle add size List
+  bool res = true; //initialize result
+
+  if (head != NULL && head->next != NULL) {
+    //get the middle of the List (using the method of the 2 pointers)
+    while (fast_ptr != NULL && fast_ptr->next != NULL) {
+      fast_ptr = fast_ptr->next->next;
+      prev_of_slow_ptr = slow_ptr;
+      slow_ptr = slow_ptr->next;
+    }
+
+    /* fast_ptr would become NULL when there are even elements in list.
+          And not NULL for odd elements. We need to skip the middle node
+          for odd case and store it somewhere so that we can restore the
+          original list*/
+    if (fast_ptr != NULL) {
+      midnode = slow_ptr;
+      slow_ptr = slow_ptr->next;
+    }
+
+    // Now reverse the second half and compare it with the first half
+    second_half = slow_ptr;
+    prev_of_slow_ptr->next = NULL;
+    reverse(&second_half);//reverse the second half
+    res = compareLists(head,second_half); //compare
+     //construct the original list back
+     reverse(&second_half);
+
+     //if there was midnode (add size case)
+     if(midnode != NULL)
+     {
+       prev_of_slow_ptr->next = midnode;
+       midnode->next = second_half;
+     }
+     else
+     {
+       prev_of_slow_ptr->next = second_half;
+     }
+  }
+  return res;
+}
+
+//removeDuplicates() function : ex, for 11->11->11->21->43->43->60
+//removeDuplicates() returns  11->21->43->60
+void removeDuplicates(struct Node* head_ref) { // /!\ only for SORTED l.lists
+  struct Node* current = head_ref; //pointer to traverse the l.list
+  struct Node* next_next; //pointer to store the next pointer of a node to be deleted
+
+  if (current == NULL) {
+    return;
+  }
+  //traverse the l.list until last node
+  while (current->next != NULL) {
+
+    if (current->data == current->next->data) {
+      next_next = current->next->next;
+      free(current->next);
+      current->next = next_next;
+    }
+    else //only advance if no deletion
+    {
+      current = current->next;
+    }
+  }
+}
+
+//if l.list isn't SORTED
+
+//utility function to create a new Node
+struct Node *newNode(int data) {
+  struct Node* temp;
+  temp->data = data;
+  temp->next = NULL;
+  return temp;
+}
+void adv_removeDuplicates(struct Node* head_ref) {
+  struct Node *ptr1, *ptr2, *dup;
+
+  //pick elements one by one
+  while(ptr1 != NULL && ptr1->next != NULL) {
+    ptr2 = ptr1;
+
+    //compare the picked element with rest of the elements
+    while (ptr2->next != NULL) {
+      //if duplicate then delete it
+      if (ptr1->data == ptr2->next->data) {
+        dup = ptr2->next;
+        ptr2->next = ptr2->next->next;
+        free(dup);
+      }
+      else
+      {
+        ptr2 = ptr2->next;
+      }
+    }
+    ptr1 = ptr1->next;
+  }
+}
+
+/* Function to swap nodes x and y in linked list by
+   changing links */
+void swapNodes(struct Node **head_ref, int x, int y)
+{
+   // Nothing to do if x and y are same
+   if (x == y) return;
+
+   // Search for x (keep track of prevX and CurrX
+   struct Node *prevX = NULL, *currX = *head_ref;
+   while (currX && currX->data != x)
+   {
+       prevX = currX;
+       currX = currX->next;
+   }
+
+   // Search for y (keep track of prevY and CurrY
+   struct Node *prevY = NULL, *currY = *head_ref;
+   while (currY && currY->data != y)
+   {
+       prevY = currY;
+       currY = currY->next;
+   }
+
+   // If either x or y is not present, nothing to do
+   if (currX == NULL || currY == NULL)
+       return;
+
+   // If x is not head of linked list
+   if (prevX != NULL)
+       prevX->next = currY;
+   else // Else make y as new head
+       *head_ref = currY;
+
+   // If y is not head of linked list
+   if (prevY != NULL)
+       prevY->next = currX;
+   else  // Else make x as new head
+       *head_ref = currX;
+
+   // Swap next pointers
+   struct Node *temp = currY->next;
+   currY->next = currX->next;
+   currX->next  = temp;
+}
+
+//program to create a simple linked list with 6 nodes
 int main(void) {
 
   struct Node* head = NULL;
   struct Node* second = NULL;
   struct Node* third = NULL;
+  struct Node* fourth = NULL;
+  struct Node* fifth = NULL;
+  struct Node* sixth = NULL;
 
-  //allocate three nodes in the heap
+
+
+
+  //allocate nodes in the heap
   head = (struct Node*)malloc(sizeof(struct Node));
   second = (struct Node*)malloc(sizeof(struct Node));
   third = (struct Node*)malloc(sizeof(struct Node));
+  fourth = (struct Node*)malloc(sizeof(struct Node));
+  fifth = (struct Node*)malloc(sizeof(struct Node));
+  sixth = (struct Node*)malloc(sizeof(struct Node));
 
-  /* Three blocks have been allocated  dynamically.
-     We have pointers to these three blocks as first,
-     second and third
+  /* blocks have been allocated  dynamically.
+     We have pointers to these blocks as first,
+     second and third...etc.
        head           second           third
         |                |               |
         |                |               |
     +---+-----+     +----+----+     +----+----+
-    | #  | #  |     | #  | #  |     |  # |  # |
+    | #  | #  |     | #  | #  |     |  # |  # | . . .
     +---+-----+     +----+----+     +----+----+
 
    # represents any random value.
@@ -309,13 +508,19 @@ int main(void) {
     +---+---+     +----+----+     +-----+----+
   */
 
-  //assign data to second node
+  //build the l.list
   second->data = 2;
   second->next = third;
+  third->data = 1;
+  third->next = fourth;
+  fourth->data = 3;
+  fourth->next = fifth;
+  fifth->data = 2;
+  fifth->next = sixth;
+  sixth->data = 3;
+  sixth->next = NULL;
 
-  //and finally..
-  third->data = 3;
-  third->next = NULL;
+  adv_removeDuplicates(head);
   printList(head);
   return 0;
 
