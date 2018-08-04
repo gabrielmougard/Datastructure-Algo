@@ -107,7 +107,50 @@ void printList(struct Node* node)
         last = last->prev;
     }
 }
+/* Function to delete a node in a Doubly Linked List.
+   head_ref --> pointer to head node pointer.
+   del  -->  pointer to node to be deleted. */
+void deleteNode(struct Node** head_ref, struct Node* del) {
+  if (*head_ref == NULL || del == NULL) {
+    return;
+  }
+  //if node to be deleted is head node
+  if (*head_ref == del) {
+    *head_ref = del->next;
+  }
+  //change next only if node to be deleted is not the last Node
+  if (del->next != NULL) {
+    del->next->prev = del->prev;
+  }
+  /* Change prev only if node to be deleted is NOT the first node */
+  if(del->prev != NULL){
+    del->prev->next = del->next;
+  }
+  //finally free memory occupied by del
+  free(del);
+  return;
+} //time and spacecomplexity : O(1)
 
+
+/////
+void reverse(struct Node** head_ref) {
+  struct Node* temp = NULL;
+  struct Node* current = (*head_ref);
+
+  /* swap next and prev for all nodes of
+       doubly linked list */
+  while (current != NULL) {
+    temp = current->prev;
+    current->prev = current->next;
+    current->next = temp;
+    current = current->prev;
+
+  }
+
+  if (temp != NULL) {
+    *head_ref = temp->prev;
+  }
+}
 
 
 int main()
@@ -124,6 +167,9 @@ int main()
     insertAfter(head->next, 8);
 
     printf("Created DLL is: ");
+    printList(head);
+
+    reverse(&head);
     printList(head);
 
     getchar();
