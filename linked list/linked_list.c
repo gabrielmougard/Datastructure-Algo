@@ -484,7 +484,10 @@ void swap(int *a, int *b)
     temp = *a;
     *a = *b;
     *b = temp;
-} 
+}
+
+//TODO : Flattening a Linked list, linked list intersection, linked list merge
+
 
 //program to create a simple linked list with 6 nodes
 int main(void) {
