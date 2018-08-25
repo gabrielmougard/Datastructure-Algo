@@ -18,45 +18,45 @@ struct node* newNode(int data) {
   return(Node);
 }
 
-void insertion(struct node* root, int label) {
-  if ((root->left != NULL) && (root->right != NULL)) { //double recursion
-    insertion(root->left,label);
-    insertion(root->right,label);
-  }
-  else
-  {
-    if(root->left == NULL)
-      root->left = newNode(label); //insertion to the left first
-    else
-      root->right = newNode(label);
+//Inorder traversal of a BinaryTree
+void inorder (struct node* temp) {
+  if (!temp)
     return;
-  }
+  inorder(temp->left);
+  printf("%d ",temp->data);
+  inorder(temp->right);
 }
 
-int lenTree(struct node* root,int initial_count)
-{ //count the nodes in the tree
-  int res=initial_count;
-
-  if ((root->left == NULL) && (root->right == NULL)) {
-    return res;
-  }
-  else
-  {
-    if (root->left != NULL)
-      res+=lenTree(root->left,res+1);
-    if (root->right != NULL)
-      res+=lenTree(root->right,res+1);
-  }
-}
-
-/*
-
-
-void draw(struct node* root)
+////Queue structure for nodes////
+struct Queue
 {
-
+  int size;
+  unsigned capacity;
+  struct node* front,rear;
+  struct node** array;
+};
+//////////////////////////////////
+int isFull(struct Queue* queue) {
+  return (queue->size == queue->capacity);
 }
-*/
+
+void enqueue(struct Queue* queue, struct node* item) {
+  if (isFull(queue))
+    return
+  queue->rear = (queue->rear + 1)%(queue->capacity);
+  queue->array[queue->rear] = item;
+  queue->size = queue->size + 1;
+  printf("%d enqueued to queue\n",item);
+}
+
+void insert(struct node* temp) {
+
+  //memory allocation
+  struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
+  enqueue(q,temp);
+
+  //TODO : finish this shit !
+}
 
 int main(int argc, char const *argv[]) {
 
