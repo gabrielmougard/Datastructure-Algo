@@ -22,6 +22,7 @@ Keys in both of the above trees follow the
 following order
  keys(T1) < key(x) < keys(T2) < key(y) < keys(T3)
 So BST property is not violated anywhere.
+*/
 
 // An AVL tree node
 struct node
@@ -307,7 +308,7 @@ int main()
 
     root = deleteNode(root, 9);
 
-    printf("\nPre order traversal after deletion of 10 \n"); 
+    printf("\nPre order traversal after deletion of 10 \n");
     preOrder(root);
 
     return 0;
